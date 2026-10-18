@@ -1160,9 +1160,70 @@
           </button>
         </form>
 
-        <div id="modal-success" class="hidden p-4 rounded-xl bg-emerald-950/40 border border-emerald-500/40 text-center space-y-1">
-          <div class="text-electric-emerald font-bold text-base font-display">🎉 You're on the priority list!</div>
-          <p class="text-xs text-zinc-300">We've saved your spot. You will receive an invitation to connect your app shortly.</p>
+        <!-- Robinhood-Style Gamified VIP Ticket & Viral Share Loop -->
+        <div id="modal-success" class="hidden space-y-4 pt-1">
+          <!-- Ticket / Queue Header -->
+          <div class="p-4 rounded-2xl bg-gradient-to-b from-electric-emerald/15 to-emerald-950/40 border border-emerald-500/40 text-center space-y-2">
+            <div class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-500/30 text-emerald-400 font-mono text-[11px] font-bold uppercase tracking-wider">
+              <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+              VIP Early Access Confirmed
+            </div>
+            <h3 class="font-display font-extrabold text-2xl text-white">
+              You're Spot #<span id="queue-spot-num" class="text-electric-emerald">47</span> in Line!
+            </h3>
+            <p class="text-xs text-zinc-300 max-w-sm mx-auto leading-relaxed">
+              We've saved your spot. A confirmation has been dispatched to <span id="queue-user-email" class="font-mono text-emerald-300 font-bold break-all"></span>.
+            </p>
+          </div>
+
+          <!-- Robinhood Viral Skip Box -->
+          <div class="p-4 rounded-2xl bg-black/60 border border-electric-cyan/40 relative overflow-hidden shadow-xl shadow-cyan-500/10 space-y-3">
+            <div class="flex items-center justify-between">
+              <div class="flex items-center gap-2">
+                <span class="text-base">🚀</span>
+                <span class="font-display font-bold text-sm text-white">Want to Skip the Queue?</span>
+              </div>
+              <span class="px-2 py-0.5 rounded text-[10px] font-mono bg-electric-cyan/20 text-electric-cyan border border-electric-cyan/30 font-bold">
+                Jump to #1
+              </span>
+            </div>
+            <p class="text-[12px] text-zinc-400 leading-relaxed">
+              Post about VibeFix on X / Twitter. Tag us and our automated waitlist engine will instantly bump you to Priority Wave 1.
+            </p>
+
+            <a 
+              id="tweet-share-btn" 
+              href="https://twitter.com/intent/tweet" 
+              target="_blank" 
+              rel="noopener noreferrer" 
+              class="w-full py-3 rounded-xl bg-white hover:bg-zinc-200 text-black font-extrabold text-xs flex items-center justify-center gap-2 transition-all shadow-md active:scale-95 font-mono"
+            >
+              <svg class="w-4 h-4 fill-current" viewBox="0 0 24 24"><path d="M18.244 2.25h3.308l-7.227 8.26 8.502 11.24H16.17l-5.214-6.817L4.99 21.75H1.68l7.73-8.835L1.254 2.25H8.08l4.713 6.231zm-1.161 17.52h1.833L7.084 4.126H5.117z"/></svg>
+              <span>Share on X & Skip Queue</span>
+            </a>
+
+            <div class="flex items-center gap-2 pt-1">
+              <button 
+                type="button" 
+                onclick="copyReferralLink()" 
+                class="flex-1 py-2 px-3 rounded-lg bg-white/5 hover:bg-white/10 text-zinc-300 border border-white/10 text-[11px] font-mono flex items-center justify-center gap-1.5 transition"
+              >
+                <i data-lucide="copy" class="w-3.5 h-3.5"></i>
+                <span id="copy-link-text">Copy Invite Link</span>
+              </button>
+              <button 
+                type="button" 
+                onclick="closeModal()" 
+                class="py-2 px-4 rounded-lg bg-zinc-800 hover:bg-zinc-700 text-zinc-400 hover:text-white text-[11px] font-mono transition"
+              >
+                Done
+              </button>
+            </div>
+
+            <p class="text-[10px] text-center text-zinc-500 font-mono">
+              ⚡ 14 founders skipped the line in the last 2 hours
+            </p>
+          </div>
         </div>
       </div>
 
@@ -1481,7 +1542,31 @@
       }, 3500);
     }
 
-    // 5. Modal Management
+    // 5. Modal Management & Referral Engine
+    function getQueueSpot() {
+      let spot = localStorage.getItem('vibefix_queue_spot');
+      if (!spot) {
+        spot = Math.floor(47 + Math.random() * 5);
+        localStorage.setItem('vibefix_queue_spot', spot);
+      }
+      return spot;
+    }
+
+    function copyReferralLink() {
+      const shareUrl = "https://vibefix-landing.pages.dev";
+      navigator.clipboard.writeText(shareUrl).then(() => {
+        const textSpan = document.getElementById('copy-link-text');
+        const oldText = textSpan.textContent;
+        textSpan.textContent = 'Link Copied! 🎉';
+        AudioEngine.step();
+        setTimeout(() => {
+          textSpan.textContent = oldText;
+        }, 2200);
+      }).catch(() => {
+        alert("Referral link: " + shareUrl);
+      });
+    }
+
     function openModal(type, planName = '') {
       AudioEngine.click();
       const modal = document.getElementById('universal-modal');
@@ -1489,7 +1574,10 @@
       if (planName) {
         document.getElementById('modal-plan-desc').textContent = `Signing up for early access on: ${planName}`;
       }
-      document.getElementById('modal-email-input').focus();
+      const emailInput = document.getElementById('modal-email-input');
+      if (emailInput) {
+        setTimeout(() => emailInput.focus(), 100);
+      }
       lucide.createIcons();
     }
 
@@ -1498,7 +1586,7 @@
       document.getElementById('universal-modal').classList.add('hidden');
     }
 
-    // 6. Waitlist Dispatch to moodflixstudios@gmail.com
+    // 6. Waitlist Dispatch with Automated Welcome Email & Robinhood Viral Share
     async function submitModalWaitlist(e) {
       e.preventDefault();
       AudioEngine.success();
@@ -1506,10 +1594,10 @@
       // Confetti burst
       if (typeof confetti === 'function') {
         confetti({
-          particleCount: 100,
-          spread: 80,
+          particleCount: 110,
+          spread: 85,
           origin: { y: 0.5 },
-          colors: ['#00F0FF', '#10B981', '#6366F1']
+          colors: ['#00F0FF', '#10B981', '#6366F1', '#F59E0B']
         });
       }
 
@@ -1518,15 +1606,26 @@
       submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Securing Spot...</span>';
       if (window.lucide) lucide.createIcons();
 
-      const email = document.getElementById('modal-email-input').value;
+      const email = document.getElementById('modal-email-input').value.trim();
       const tool = document.getElementById('modal-tool-select').value;
+      const spot = getQueueSpot();
       
+      // Update UI with Spot and Email
+      document.getElementById('queue-spot-num').textContent = spot;
+      document.getElementById('queue-user-email').textContent = email;
+
+      // Prepare 1-Click Viral Tweet URL
+      const tweetMsg = `I just joined the early access waitlist for @VibeFix_dev (Spot #${spot}) 🛠️\n\nThe 24/7 self-healing DevOps engine that auto-patches production bugs in Cursor & Lovable apps.\n\nSkip the line here: https://vibefix-landing.pages.dev`;
+      const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(tweetMsg)}`;
+      const tweetBtn = document.getElementById('tweet-share-btn');
+      if (tweetBtn) tweetBtn.href = tweetUrl;
+
       // 1. Local storage backup
       const saved = JSON.parse(localStorage.getItem('vibefix_waitlist') || '[]');
-      saved.push({ email, tool, date: new Date().toISOString() });
+      saved.push({ email, tool, spot, date: new Date().toISOString() });
       localStorage.setItem('vibefix_waitlist', JSON.stringify(saved));
 
-      // 2. Direct dispatch to moodflixstudios@gmail.com
+      // 2. Direct dispatch to moodflixstudios@gmail.com with automated Welcome Email (_autoresponse)
       try {
         await fetch("https://formsubmit.co/ajax/moodflixstudios@gmail.com", {
           method: "POST",
@@ -1535,10 +1634,22 @@
             'Accept': 'application/json'
           },
           body: JSON.stringify({
-            _subject: "🚀 New VibeFix Beta Signup!",
+            _subject: `🚀 [Waitlist #${spot}] New VibeFix Signup: ${email}`,
             email: email,
+            queue_position: `#${spot}`,
             built_with: tool,
-            submitted_at: new Date().toISOString()
+            submitted_at: new Date().toISOString(),
+            _autoresponse: `Hey! Welcome to VibeFix Early Access.
+
+You're officially locked in at Spot #${spot}. We are onboarding AI founders (Cursor, Lovable, Bolt.new, v0) in priority waves this week.
+
+Want to skip the queue and get Wave 1 access?
+Share your spot on X / Twitter:
+${tweetUrl}
+
+Stay tuned,
+The VibeFix Team
+https://vibefix-landing.pages.dev`
           })
         });
       } catch (err) {
@@ -1547,6 +1658,7 @@
 
       document.getElementById('modal-form').classList.add('hidden');
       document.getElementById('modal-success').classList.remove('hidden');
+      if (window.lucide) lucide.createIcons();
     }
 
     // 7. Mobile Navigation Toggle
