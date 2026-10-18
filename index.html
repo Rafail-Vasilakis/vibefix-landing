@@ -998,15 +998,41 @@
     }
 
     // Handle Modal Form Submission
-    function submitModalWaitlist(e) {
+    async function submitModalWaitlist(e) {
       e.preventDefault();
       AudioEngine.success();
+      const submitBtn = e.target.querySelector('button[type="submit"]');
+      const originalContent = submitBtn.innerHTML;
+      submitBtn.disabled = true;
+      submitBtn.innerHTML = '<i data-lucide="loader-2" class="w-4 h-4 animate-spin"></i><span>Securing Spot...</span>';
+      if (window.lucide) lucide.createIcons();
+
       const email = document.getElementById('modal-email-input').value;
       const tool = document.getElementById('modal-tool-select').value;
       
+      // 1. Local storage backup
       const saved = JSON.parse(localStorage.getItem('vibefix_waitlist') || '[]');
       saved.push({ email, tool, date: new Date().toISOString() });
       localStorage.setItem('vibefix_waitlist', JSON.stringify(saved));
+
+      // 2. Direct dispatch to founder inbox
+      try {
+        await fetch("https://formsubmit.co/ajax/dpsd18011@aegean.gr", {
+          method: "POST",
+          headers: { 
+            'Content-Type': 'application/json',
+            'Accept': 'application/json'
+          },
+          body: JSON.stringify({
+            _subject: "🚀 New VibeFix Beta Signup!",
+            email: email,
+            built_with: tool,
+            submitted_at: new Date().toISOString()
+          })
+        });
+      } catch (err) {
+        console.warn("Background dispatch fallback:", err);
+      }
 
       document.getElementById('modal-form').classList.add('hidden');
       document.getElementById('modal-success').classList.remove('hidden');
