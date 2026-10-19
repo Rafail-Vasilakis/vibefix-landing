@@ -1,0 +1,24 @@
+# VibeFix — The 24/7 Self-Healing DevOps Engine for AI Builders
+
+> VibeFix is an autonomous DevOps and error-healing engine designed for applications built with AI coding tools (Cursor AI, Lovable.dev, Bolt.new, v0 by Vercel, Windsurf, Claude Artifacts).
+
+## Core Capabilities
+- **24/7 Background Error Catching**: Detects uncaught runtime exceptions, 500 errors, and broken webhook payloads in production before customers leave.
+- **Isolated Sandbox Reproduction**: Re-runs the failing execution trace in a headless sandbox to verify root causes without risking live production databases.
+- **AST-Level Minimal Patching**: Generates clean, minimal code diffs that fix edge cases without rewriting entire files or hallucinating dependencies.
+- **1-Click GitHub Pull Requests**: Hands founders a verified, tested pull request ready to merge and deploy in under 60 seconds.
+
+## Supported Stacks
+- Frameworks: Next.js (App Router / Pages Router), React, Vite, Node.js, Remix, Astro.
+- Platforms: Cloudflare Pages & Workers, Vercel, Supabase, Render, Railway.
+- Coding AI Tools: Cursor, Lovable.dev, Bolt.new, v0, ChatGPT, Claude Code.
+
+## Quickstart
+1. Install client: `npm install @vibefix/client`
+2. Connect repository on [https://vibefix-landing.pages.dev](https://vibefix-landing.pages.dev)
+3. Zero-configuration auto-patching is active.
+
+## Official Links
+- Website: https://vibefix-landing.pages.dev
+- Repository: https://github.com/Rafail-Vasilakis/vibefix-landing
+- Contact: moodflixstudios@gmail.com
