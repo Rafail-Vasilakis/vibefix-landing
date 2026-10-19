@@ -129,30 +129,166 @@
       z-index: 0;
     }
 
-    /* Glass Effect with Inset Lighting */
+    /* ==========================================================================
+       REALISTIC LIQUIDS & GLASSMORPHISM ENGINE
+       ========================================================================== */
+    #liquid-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      pointer-events: none;
+      z-index: 0;
+      opacity: 0.75;
+    }
+
+    /* Ultra-Realistic Liquid Glass Physics */
     .glass-card {
-      background: rgba(13, 15, 22, 0.75);
-      backdrop-filter: blur(18px);
-      -webkit-backdrop-filter: blur(18px);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.08), 0 20px 40px -15px rgba(0, 0, 0, 0.6);
+      position: relative;
+      background: rgba(13, 15, 22, 0.52) !important;
+      backdrop-filter: blur(32px) saturate(210%) contrast(108%) !important;
+      -webkit-backdrop-filter: blur(32px) saturate(210%) contrast(108%) !important;
+      border: 1px solid rgba(255, 255, 255, 0.16) !important;
+      box-shadow: 
+        inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.35),
+        inset 0 -1.5px 2px 0 rgba(0, 0, 0, 0.45),
+        0 24px 60px -12px rgba(0, 0, 0, 0.75) !important;
+      overflow: hidden;
+      transition: transform 240ms cubic-bezier(0.16, 1, 0.3, 1), border-color 240ms ease, box-shadow 240ms ease !important;
     }
+
+    /* Dynamic Specular Lens Flare on Pointer Move */
+    .glass-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle 380px at var(--mouse-x, 50%) var(--mouse-y, 50%), rgba(255, 255, 255, 0.16) 0%, rgba(255, 255, 255, 0.02) 45%, transparent 70%);
+      pointer-events: none;
+      opacity: 0;
+      transition: opacity 240ms ease;
+      z-index: 1;
+    }
+
+    .glass-card:hover::before {
+      opacity: 1;
+    }
+
     .glass-card:hover {
-      border-color: rgba(255, 255, 255, 0.15);
+      transform: translateY(-4px) scale(1.012) !important;
+      border-color: rgba(0, 240, 255, 0.4) !important;
+      box-shadow: 
+        inset 0 2px 3px 0 rgba(255, 255, 255, 0.6),
+        inset 0 -2px 3px 0 rgba(0, 0, 0, 0.5),
+        0 32px 80px -16px rgba(0, 240, 255, 0.28) !important;
     }
 
-    /* Typography Strokes */
-    .text-stroke-cyan {
-      -webkit-text-stroke: 1.5px rgba(0, 240, 255, 0.4);
-      color: transparent;
-    }
-    .text-stroke-title {
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.2);
-      color: transparent;
+    /* Apple Frosted Glass Accordion */
+    .faq-container {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      width: 100%;
     }
 
-    details > summary::-webkit-details-marker {
+    .faq-container details {
+      background: rgba(16, 18, 28, 0.55);
+      backdrop-filter: blur(28px) saturate(200%);
+      -webkit-backdrop-filter: blur(28px) saturate(200%);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 16px;
+      padding: 1.35rem 1.6rem;
+      box-shadow: 
+        inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.25),
+        0 8px 24px -4px rgba(0, 0, 0, 0.5);
+      overflow: hidden;
+      transition: background 220ms ease, border-color 220ms ease, box-shadow 220ms ease, transform 180ms ease;
+    }
+
+    .faq-container details:hover {
+      background: rgba(20, 24, 38, 0.7);
+      border-color: rgba(0, 240, 255, 0.35);
+      transform: translateY(-2px);
+      box-shadow: 
+        inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.35),
+        0 14px 36px -6px rgba(0, 0, 0, 0.6);
+    }
+
+    .faq-container details[open] {
+      background: rgba(22, 28, 44, 0.82);
+      border-color: rgba(0, 240, 255, 0.5);
+      box-shadow: 
+        inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.4),
+        0 16px 40px -8px rgba(0, 240, 255, 0.25);
+    }
+
+    .faq-container summary {
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: #fff;
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 1rem;
+      user-select: none;
+    }
+
+    .faq-container summary::-webkit-details-marker {
       display: none;
+    }
+
+    .faq-container summary::after {
+      content: "+";
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: #00F0FF;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      background: rgba(0, 240, 255, 0.12);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      transition: transform 220ms cubic-bezier(0.25, 1, 0.5, 1), background 200ms ease, color 200ms ease;
+    }
+
+    .faq-container details[open] summary::after {
+      transform: rotate(45deg);
+      background: rgba(244, 63, 94, 0.15);
+      border-color: rgba(244, 63, 94, 0.3);
+      color: #F43F5E;
+    }
+
+    .faq-container details p {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid rgba(255, 255, 255, 0.08);
+      font-size: 0.92rem;
+      color: #94A3B8;
+      line-height: 1.65;
+    }
+
+    @media (max-width: 640px) {
+      .faq-container {
+        padding: 0;
+        gap: 0.75rem;
+      }
+      .faq-container details {
+        padding: 1.1rem 1.2rem;
+        border-radius: 12px;
+      }
+      .faq-container summary {
+        font-size: 0.95rem;
+        line-height: 1.4;
+      }
+      .faq-container details p {
+        font-size: 0.85rem;
+        line-height: 1.55;
+      }
     }
 
     /* Range slider custom styling */
@@ -186,6 +322,9 @@
   </style>
 </head>
 <body class="relative min-h-screen antialiased flex flex-col justify-between cyber-grid">
+
+  <!-- Realistic Liquids & Glass Canvas Engine -->
+  <canvas id="liquid-canvas"></canvas>
 
   <!-- Interactive Luminous Elements -->
   <div class="custom-cursor-dot" id="cursorDot"></div>
@@ -745,44 +884,32 @@
         <p class="text-zinc-400 text-sm mt-1">Everything you need to know before connecting your app.</p>
       </div>
 
-      <div class="space-y-4">
+      <div class="faq-container">
         
-        <details class="glass-card rounded-xl p-5 border border-white/10 group cursor-pointer">
-          <summary class="flex justify-between items-center font-bold text-white text-sm">
-            <span>Can VibeFix accidentally break my website even more?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
-          </summary>
-          <p class="text-xs text-zinc-300 mt-3 leading-relaxed">
+        <details open>
+          <summary>Can VibeFix accidentally break my website even more?</summary>
+          <p>
             No! Before offering you a fix, VibeFix runs a full automated build and test in an isolated sandbox. If the fix causes any compilation or syntax errors, it gets discarded. Furthermore, nothing is applied until you personally review the diff and tap Approve.
           </p>
         </details>
 
-        <details class="glass-card rounded-xl p-5 border border-white/10 group cursor-pointer">
-          <summary class="flex justify-between items-center font-bold text-white text-sm">
-            <span>Which AI app builders work with VibeFix?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
-          </summary>
-          <p class="text-xs text-zinc-300 mt-3 leading-relaxed">
+        <details>
+          <summary>Which AI app builders work with VibeFix?</summary>
+          <p>
             Any app built with Cursor AI, Lovable.dev, Bolt.new, v0 by Vercel, Windsurf, Replit, or ChatGPT! As long as your project runs on standard JavaScript/TypeScript (Next.js, React, Vite, Node), VibeFix works right out of the box.
           </p>
         </details>
 
-        <details class="glass-card rounded-xl p-5 border border-white/10 group cursor-pointer">
-          <summary class="flex justify-between items-center font-bold text-white text-sm">
-            <span>How hard is it to set up?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
-          </summary>
-          <p class="text-xs text-zinc-300 mt-3 leading-relaxed">
-            It takes under 60 seconds. You copy-paste one line into your terminal (`npm i @vibefix/client`), connect your GitHub account once, and you're protected forever.
+        <details>
+          <summary>How hard is it to set up?</summary>
+          <p>
+            It takes under 60 seconds. You copy-paste one line into your terminal (<code class="font-mono text-electric-cyan bg-cyan-950/40 px-2 py-0.5 rounded border border-cyan-500/20">npm i @vibefix/client</code>), connect your GitHub account once, and you're protected forever.
           </p>
         </details>
 
-        <details class="glass-card rounded-xl p-5 border border-white/10 group cursor-pointer">
-          <summary class="flex justify-between items-center font-bold text-white text-sm">
-            <span>Is the free plan really free?</span>
-            <i data-lucide="chevron-down" class="w-4 h-4 text-zinc-400 group-open:rotate-180 transition-transform"></i>
-          </summary>
-          <p class="text-xs text-zinc-300 mt-3 leading-relaxed">
+        <details>
+          <summary>Is the free plan really free?</summary>
+          <p>
             Yes. The Starter plan gives you 5 automated code fixes every month forever without asking for a credit card. It's designed to protect early founders and indie hackers until they get paying users.
           </p>
         </details>
@@ -1720,6 +1847,159 @@ https://vibefix-landing.pages.dev`
 
     // Run on boot
     updateRoiCalc();
+
+    // ==========================================================================
+    // 9. REALISTIC LIQUIDS & GLASS SHADER RUNTIME
+    // Powered by WebGL Fluid Physics + Dynamic Glass Refraction
+    // ==========================================================================
+    (function initLiquidAndGlass() {
+      // 1. High-Performance Viscous Fluid Simulation on Canvas
+      const canvas = document.getElementById('liquid-canvas');
+      if (!canvas) return;
+      const ctx = canvas.getContext('2d');
+      let width, height;
+      let mouse = { x: -1000, y: -1000, targetX: -1000, targetY: -1000, vx: 0, vy: 0 };
+      let lastTime = performance.now();
+
+      function resize() {
+        width = canvas.width = window.innerWidth;
+        height = canvas.height = window.innerHeight;
+      }
+      window.addEventListener('resize', resize);
+      resize();
+
+      // Fluid particles / organic chromatic liquid blobs matching VibeFix neon cyberpunk palette
+      const blobs = [
+        { x: width * 0.2, y: height * 0.25, r: 290, color: 'rgba(0, 240, 255, 0.38)', vx: 0.32, vy: 0.22, phase: 0 },
+        { x: width * 0.8, y: height * 0.35, r: 320, color: 'rgba(16, 185, 129, 0.32)', vx: -0.26, vy: 0.28, phase: 2 },
+        { x: width * 0.5, y: height * 0.65, r: 360, color: 'rgba(99, 102, 241, 0.30)', vx: 0.18, vy: -0.25, phase: 4 },
+        { x: width * 0.85, y: height * 0.8, r: 250, color: 'rgba(245, 158, 11, 0.20)', vx: -0.22, vy: -0.18, phase: 1.5 },
+        { x: width * 0.15, y: height * 0.75, r: 270, color: 'rgba(14, 165, 233, 0.32)', vx: 0.28, vy: -0.15, phase: 3.2 }
+      ];
+
+      // Mouse interactive fluid disturbance
+      window.addEventListener('pointermove', (e) => {
+        mouse.targetX = e.clientX;
+        mouse.targetY = e.clientY;
+      });
+
+      function renderFluid(now) {
+        const dt = (now - lastTime) / 1000;
+        lastTime = now;
+
+        // Smooth mouse damping
+        mouse.vx = (mouse.targetX - mouse.x) * 0.1;
+        mouse.vy = (mouse.targetY - mouse.y) * 0.1;
+        mouse.x += mouse.vx;
+        mouse.y += mouse.vy;
+
+        ctx.clearRect(0, 0, width, height);
+
+        // Render each morphing liquid blob
+        for (let i = 0; i < blobs.length; i++) {
+          const b = blobs[i];
+          b.phase += dt * 0.8;
+          b.x += b.vx + Math.sin(b.phase) * 0.6;
+          b.y += b.vy + Math.cos(b.phase * 0.9) * 0.6;
+
+          // Gentle edge bounce
+          if (b.x < -100) b.vx = Math.abs(b.vx);
+          if (b.x > width + 100) b.vx = -Math.abs(b.vx);
+          if (b.y < -100) b.vy = Math.abs(b.vy);
+          if (b.y > height + 100) b.vy = -Math.abs(b.vy);
+
+          // Fluid displacement from cursor
+          const dx = b.x - mouse.x;
+          const dy = b.y - mouse.y;
+          const dist = Math.sqrt(dx * dx + dy * dy);
+          if (dist < 320 && dist > 0) {
+            const force = (1 - dist / 320) * 1.5;
+            b.x += (dx / dist) * force * 15;
+            b.y += (dy / dist) * force * 15;
+          }
+
+          // Dynamic radial gradient with chromatic edge
+          const grad = ctx.createRadialGradient(b.x, b.y, b.r * 0.1, b.x, b.y, b.r);
+          grad.addColorStop(0, b.color);
+          grad.addColorStop(0.65, b.color.replace(/[\d\.]+\)$/, '0.10)'));
+          grad.addColorStop(1, 'transparent');
+
+          ctx.fillStyle = grad;
+          ctx.beginPath();
+          ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        // Mouse fluid ripple
+        if (mouse.x > 0 && mouse.y > 0) {
+          const mouseGrad = ctx.createRadialGradient(mouse.x, mouse.y, 0, mouse.x, mouse.y, 160);
+          mouseGrad.addColorStop(0, 'rgba(0, 240, 255, 0.22)');
+          mouseGrad.addColorStop(0.5, 'rgba(16, 185, 129, 0.08)');
+          mouseGrad.addColorStop(1, 'transparent');
+          ctx.fillStyle = mouseGrad;
+          ctx.beginPath();
+          ctx.arc(mouse.x, mouse.y, 160, 0, Math.PI * 2);
+          ctx.fill();
+        }
+
+        requestAnimationFrame(renderFluid);
+      }
+      requestAnimationFrame(renderFluid);
+
+      // 2. Realistic Specular Glare & 3D Tilt on All Glass Cards
+      const glassCards = document.querySelectorAll('.glass-card, .faq-container details');
+      glassCards.forEach(card => {
+        card.addEventListener('pointermove', (e) => {
+          const rect = card.getBoundingClientRect();
+          const x = e.clientX - rect.left;
+          const y = e.clientY - rect.top;
+          card.style.setProperty('--mouse-x', `${x}px`);
+          card.style.setProperty('--mouse-y', `${y}px`);
+
+          // Subtle 3D physical tilt (only for desktop cards, not modals)
+          if (window.innerWidth > 768 && !card.closest('#universal-modal')) {
+            const centerX = rect.width / 2;
+            const centerY = rect.height / 2;
+            const rotateX = ((y - centerY) / centerY) * -2.8;
+            const rotateY = ((x - centerX) / centerX) * 2.8;
+            card.style.transform = `perspective(1000px) rotateX(${rotateX.toFixed(2)}deg) rotateY(${rotateY.toFixed(2)}deg) translateY(-4px)`;
+          }
+        });
+
+        card.addEventListener('pointerleave', () => {
+          if (window.innerWidth > 768 && !card.closest('#universal-modal')) {
+            card.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
+          }
+        });
+      });
+
+      // 3. Audio micro-haptics on FAQ click
+      document.querySelectorAll('.faq-container details').forEach(d => {
+        d.addEventListener('toggle', () => {
+          if (d.open && typeof AudioEngine !== 'undefined') {
+            AudioEngine.step();
+          }
+        });
+      });
+
+      // 4. Dynamic integration with @ybouane/liquidglass for WebGL refraction
+      try {
+        import('https://cdn.jsdelivr.net/npm/@ybouane/liquidglass/dist/index.js')
+          .then(({ LiquidGlass }) => {
+            if (LiquidGlass && typeof LiquidGlass.init === 'function') {
+              LiquidGlass.init({
+                root: document.body,
+                glassElements: Array.from(glassCards)
+              }).then(() => {
+                console.log('[LiquidGlass] WebGL optical glass refraction active!');
+              }).catch(e => {
+                console.log('[LiquidGlass] GPU CSS Glass fallback active:', e.message);
+              });
+            }
+          })
+          .catch(() => {});
+      } catch (e) {}
+    })();
   </script>
 </body>
 </html>
